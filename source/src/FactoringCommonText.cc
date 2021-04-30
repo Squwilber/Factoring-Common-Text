@@ -108,9 +108,8 @@ public:
 int main()
 {
 	int topCount = 1, bottomCount = 1;
-	string path = ".\\Project_Gutenberg";
+	string path = "..\\..\\projectGutenberg";
 	vector<eBook> eBooks;
-
 	// Create directory to store boilerplates
 	filesystem::create_directory(".\\out");
 	//iterate over every file in the given path

@@ -32,4 +32,4 @@
 *.app
 
 # Ignore the out directory
-/out
+source/src/out/
