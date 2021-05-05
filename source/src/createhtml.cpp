@@ -1,22 +1,16 @@
-#include <createhtml.h>
-#include <fsstream>
-#include <iostream>
-#include <string>
+#include "../includes/createhtml.h"
 using namespace std;
 
-const string headerTag = "!DOCTYPE html><html><head></head><body>";
+const string headerTag = "<html><head></head><body>";
 const string footerTag = "</body></html>";
 
-namespace FactoringCommonText {
-
-void createHTMLForGivenText() {
+void HandleHTML::createHTMLForGivenText() {
   ofstream stream;
-  ifstream inputFile("textfile", std::ios::binary | std::ios::ate);
-  streamsize bufSize = file.tellg();
+  ifstream inputFile("input.txt", std::ios::binary | std::ios::ate);
+  streamsize bufSize = inputFile.tellg();
   inputFile.seekg(0, std::ios::beg);
   vector<char> inputBuffer(bufSize);
-  inputFile
-      .read(inputBuffer.data(), bufSize) // read input file contents
+  inputFile.read(inputBuffer.data(), bufSize); // read input file contents
 
   stream.open("output.html");
   stream << headerTag;
@@ -26,4 +20,8 @@ void createHTMLForGivenText() {
   stream.close();
 }
 
-} // end of namespace FactoringCommonText
+int main() {
+  HandleHTML b;
+  b.createHTMLForGivenText();
+  return 0;
+}

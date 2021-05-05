@@ -1,14 +1,9 @@
+#include <fstream>
 #include <iostream>
-
-namespace FactoringCommonText{
+#include <string>
+#include <vector>
 
 class HandleHTML {
-
-  public:
-    void createHTMLForGivenText()
-
+public:
+  void createHTMLForGivenText();
 };
-  
-  
-} // end of namespace FactoringCommonText
-
