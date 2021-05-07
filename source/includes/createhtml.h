@@ -5,5 +5,5 @@
 
 class HandleHTML {
 public:
-  void createHTMLForGivenText();
+  void createHTMLForGivenText(std::ofstream &InputFile);
 };

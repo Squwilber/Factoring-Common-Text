@@ -4,9 +4,9 @@ using namespace std;
 const string headerTag = "<html><head></head><body>";
 const string footerTag = "</body></html>";
 
-void HandleHTML::createHTMLForGivenText() {
+void HandleHTML::createHTMLForGivenText(std::ofstream &InputFile) {
   ofstream stream;
-  ifstream inputFile("input.txt", std::ios::binary | std::ios::ate);
+  ifstream inputFile(InputFile, std::ios::binary | std::ios::ate);
   streamsize bufSize = inputFile.tellg();
   inputFile.seekg(0, std::ios::beg);
   vector<char> inputBuffer(bufSize);
@@ -18,10 +18,4 @@ void HandleHTML::createHTMLForGivenText() {
   stream << footerTag;
 
   stream.close();
-}
-
-int main() {
-  HandleHTML b;
-  b.createHTMLForGivenText();
-  return 0;
 }
