@@ -33,11 +33,13 @@ private:
 	vector<string> bottomBP;
 	string topBPFilename;
 	string bottomBPFilename;
+	bool preMode;
 public:
 	eBook(string filePath, string filename) : filePath(filePath), filename(filename) { // O(number of lines in the file)
-		getboilerplate(filePath); // O(number of lines in the file)
 		topBPFilename = "";
 		bottomBPFilename = "";
+		preMode = false;
+		getboilerplate(filePath); // O(number of lines in the file)
 	}
 
 	void getboilerplate(const string filePath) { // O(number of lines in the file)
@@ -47,20 +49,37 @@ public:
 		int bottomBPCount = 6;
 		bool startbottomBPCountdown = false;
 		while(getline(file, line)) {	// O(number of lines in the file)
-			if (!line.empty() && line.find_first_not_of(' ') != string::npos) { // Skip blank lines
+			if(!preMode) {
+				if (!line.empty() && line.find_first_not_of(' ') != string::npos) { // Skip blank lines
+					addToLocation(line, loc);
+					if(loc == 0 && findCaseInsensitive(line, "The Project Gutenberg eBook") != string::npos && findCaseInsensitive(line, "<title>") == string::npos) { // Marks start of topBP
+						loc++;
+					} else if(loc == 1 && findCaseInsensitive(line, "</div>") != string::npos) { // Marks end of topBP
+						loc++;
+					} else if (loc == 1 && findCaseInsensitive(line, "Title: ") != string::npos){
+						loc++;
+						preMode = true;
+						mainFileContent.push_back(topBP[topBP.size() - 1]);
+						topBP.pop_back();
+					} else if(loc == 2 && findCaseInsensitive(line, "*** END OF") != string::npos) { // Marks end of topBP
+						startbottomBPCountdown = true;
+					} else if(startbottomBPCountdown) {
+						bottomBPCount--;
+						if(bottomBPCount == 0) {
+							loc++;
+							startbottomBPCountdown = false;
+						}
+					}
+				}
+			} else {
 				addToLocation(line, loc);
-				if(loc == 0 && findCaseInsensitive(line, "The Project Gutenberg eBook") != string::npos && findCaseInsensitive(line, "div") != string::npos) { // Marks start of topBP
-					loc++;
-				} else if(loc == 1 && findCaseInsensitive(line, "</div>") != string::npos) { // Marks end of topBP
-					loc++;
-				} else if(loc == 2 && findCaseInsensitive(line, "*** END OF THE PROJECT GUTENBERG") != string::npos) { // Marks end of topBP
+				if(loc == 2 && findCaseInsensitive(line, "*** END OF") != string::npos) { // Marks end of topBP
 					startbottomBPCountdown = true;
-				} else if(startbottomBPCountdown) {
-					bottomBPCount--;
-					if(bottomBPCount == 0) {
+				} else if(startbottomBPCountdown && findCaseInsensitive(line, "Creating ") != string::npos) {
 						loc++;
 						startbottomBPCountdown = false;
-					}
+						bottomBP.push_back(mainFileContent[mainFileContent.size() - 1]);
+						mainFileContent.pop_back();
 				}
 			}
 		}
@@ -96,6 +115,9 @@ public:
 	void createBottomBP(const string &bottomBPFilename) { // O(size of bottomBP)
 		ofstream f(".\\out" + bottomBPFilename);
 		f << "<html><head></head><body>" << endl;
+		if(preMode) {
+			f << "<pre>" << endl;
+		}
 		for(auto i : bottomBP) {
 			f << i << endl;
 		}
