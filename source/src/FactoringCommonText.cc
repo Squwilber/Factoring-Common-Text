@@ -1,5 +1,5 @@
 /*
-	Authors: Trevor Dawideit and Gousemoodhin Nadif
+	Authors: Trevor Dawideit and Gousemoodhin Nadaf
 	cite: filesystem library, https://en.cppreference.com/w/cpp/filesystem/directory_iterator
 	cite: findCaseInsensitive function, https://thispointer.com/implementing-a-case-insensitive-stringfind-in-c/
 	I pledge my honor that I have abided by the Stevens Honor System.
@@ -172,10 +172,15 @@ void copyDir(string path, string out) {
 	}
 }
 
-int main()
+int main(int argc, char *argv[])
 {
 	int topCount = 1, bottomCount = 1;
-	string path = "..\\..\\projectGutenberg";
+  if (argc < 2) {
+    cout << "Error: input path is missing" << endl;
+    cout << "Example: Factoringcommontext <path>" << endl;
+    exit(0);
+  }
+	string path = argv[1];  // Input path
 	vector<eBook> eBooks;
 	// Create directory to store boilerplates
 	filesystem::create_directory(".\\out");

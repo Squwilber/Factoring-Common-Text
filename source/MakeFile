@@ -1,18 +1,14 @@
-# Compiler
-  CXX = g++
- 
-  # compiler flags:
-  #  -g     - this flag adds debugging information to the executable file
-  #  -Wall  - this flag is used to turn on most compiler warnings
-  CXXFLAGS  = -g -Wall
- 
-  # The build target 
-  TARGET = factoring
- 
-  all: $(TARGET)
- 
-  $(TARGET): $(TARGET).c
-              $(CC) $(CFLAGS) -o $(TARGET) $(TARGET).cpp
- 
-  clean:
-              $(RM) $(TARGET)
+CXX=g++
+RM=rm -f
+CPPFLAGS=-std=c++17 -lstdc++fs
+srcfiles = ./src/FactoringCommonText.cc
+executable=Factoringcommontext
+obj=Factoringcommontext.o
+
+Factoringcommontext: $(srcfiles)
+	$(CXX) $(CPPFLAGS) -o $(executable) $(srcfiles) -I.
+
+.PHONY: clean
+
+clean:
+	$(RM) -f $(obj) $(executable)
