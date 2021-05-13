@@ -56,7 +56,7 @@ public:
 						loc++;
 					} else if(loc == 1 && findCaseInsensitive(line, "</div>") != string::npos) { // Marks end of topBP
 						loc++;
-					} else if (loc == 1 && findCaseInsensitive(line, "Title: ") != string::npos){
+					} else if (loc == 1 && findCaseInsensitive(line, "Title: ") != string::npos){ // Marks end of topBP preMode case
 						loc++;
 						preMode = true;
 						mainFileContent.push_back(topBP[topBP.size() - 1]);
@@ -103,7 +103,7 @@ public:
 	}
 
 	void createTopBP(const string &topBPFilename) { // O(size of topBP)
-		ofstream f(".\\out" + topBPFilename);
+		ofstream f("./out" + topBPFilename);
 		f << "<html><head></head><body>" << endl;
 		for(auto i : topBP) {
 			f << i << endl;
@@ -113,7 +113,7 @@ public:
 	}
 
 	void createBottomBP(const string &bottomBPFilename) { // O(size of bottomBP)
-		ofstream f(".\\out" + bottomBPFilename);
+		ofstream f("./out" + bottomBPFilename);
 		f << "<html><head></head><body>" << endl;
 		if(preMode) {
 			f << "<pre>" << endl;
@@ -167,7 +167,7 @@ void copyDir(string path, string out) {
 			copyDir(entry.path().string(), out + entry.path().filename().string());
 		}
 		else {
-			ofstream(out + "\\" +  entry.path().filename().string(), ios::binary) << ifstream(entry.path().string(), ios::binary).rdbuf();
+			ofstream(out + "/" +  entry.path().filename().string(), ios::binary) << ifstream(entry.path().string(), ios::binary).rdbuf();
 		}
 	}
 }
@@ -175,11 +175,11 @@ void copyDir(string path, string out) {
 int main()
 {
 	int topCount = 1, bottomCount = 1;
-	string path = "..\\..\\projectGutenberg";
+	string path = "../../projectGutenberg";
 	vector<eBook> eBooks;
 	// Create directory to store boilerplates
-	filesystem::create_directory(".\\out");
-	filesystem::create_directory(".\\out\\bps");
+	filesystem::create_directory("./out");
+	filesystem::create_directory("./out/bps");
 	//iterate over every file in the given path
 	for (const auto& entry : filesystem::directory_iterator(path)) { // O(number of files in the directory)
 		// Open document
@@ -188,26 +188,25 @@ int main()
 		if(findCaseInsensitive(filename, ".html") != string::npos) {
 			eBook eB(filePath, filename);
 			// Check if boilerplate already exists
-			string topName = "\\bps\\topBP" + to_string(topCount) + ".html";
+			string topName = "/bps/topBP" + to_string(topCount) + ".html";
 			if(!alreadyExistsTop(eB, eBooks, topName)) {
 				// Create new file with top boilerplate text
 				eB.createTopBP(topName);
 				topCount++;
 			}
-			string bottomName = "\\bps\\bottomBP" + to_string(bottomCount) + ".html";
+			string bottomName = "/bps/bottomBP" + to_string(bottomCount) + ".html";
 			if(!alreadyExistsBottom(eB, eBooks, bottomName)) {
 				// Create new file with bottom boilerplate text
 				eB.createBottomBP(bottomName);
 				bottomCount++;
 			}
 			// Replace bp in document with link to bp file.
-			eB.createFile(".\\out\\" + filename);
+			eB.createFile("./out/" + filename);
 			eBooks.push_back(eB);
 		} else {
 			// Copy html folder if needed
-			filesystem::create_directory(".\\out\\" + filename);
-			copyDir(filePath, ".\\out\\" + filename);
-			
+			filesystem::create_directory("./out/" + filename);
+			copyDir(filePath, "./out/" + filename);
 		}
 	}
 }
